@@ -1,0 +1,2512 @@
+{
+  "platform": "macOS-26.3-arm64-arm-64bit",
+  "machine": "arm64",
+  "python": "3.10.12",
+  "loop": "Loop",
+  "versions": {
+    "pyzmq": "27.2.0",
+    "nats-py": "2.16.0",
+    "uvloop": "0.23.0",
+    "orjson": "3.13.0",
+    "langgraph": "1.2.14",
+    "libzmq": "4.3.5",
+    "nats_server": "nats-server: v2.15.1"
+  },
+  "seed": 20261009,
+  "trial_order_randomized": true,
+  "delivery_semantics": "ephemeral application request/reply; every measured request must return its matching result",
+  "topologies": {
+    "swarmwire_memory": "direct same-process delivery",
+    "zeromq_inproc": "direct same-process PUSH/PULL mesh; raw SDK uses REQ/REP",
+    "swarmwire_unix": "separate native broker, Unix sockets, Python workers in harness process, per-send ACK",
+    "swarmwire_unix_stream": "same native Unix broker, no positive per-send ACK",
+    "zeromq_ipc": "direct Unix-socket PUSH/PULL mesh; raw SDK uses REQ/REP",
+    "swarmwire_tcp": "separate native broker, loopback TCP, per-send ACK",
+    "swarmwire_tcp_stream": "same native TCP broker, no positive per-send ACK",
+    "nats_core": "separate official NATS server, loopback TCP; no JetStream"
+  },
+  "notes": [
+    "Agent workloads share the same Python interpreter, loop, Agent envelope, payloads, handlers, deadlines and verification across modes.",
+    "Native API RTT measures direct pyzmq REQ/REP, nats-py request/respond, or raw SwarmWire Client; no Agent wrapper or JSON.",
+    "Topology and per-send acceptance semantics differ; application reply completion is the shared measurement boundary.",
+    "SwarmWire acknowledged modes wait for broker acceptance; streaming, ZeroMQ and Core NATS sends do not.",
+    "No model/API calls, durable storage, forced competitor delays or omitted losing trials.",
+    "All setup and route warmup occur before timing; agent text length excludes JSON metadata; raw payload_bytes is exact."
+  ],
+  "source_sha256": {
+    "compare.py": "d44485d48629f6d0958df41274fc04998efcf4f3a70bf1dff12f09ec289bfd95",
+    "native/swarmwire.cpp": "bf0f1d08bdb1d5c192c18cc3717f82e5fbd6bfe31fecc8281294dfd6e10ce20d",
+    "swarmwire/__init__.py": "72993cdb0c0c37a3d1ed84115cc72f5f4bda04b9d1ddb38a8cee54b3f44db999",
+    "swarmwire/__main__.py": "49a40239e46c9f1a5f7b1faf9e300e73e88748bc23e15c5242b304e20ac9091d",
+    "swarmwire/backends.py": "785f4b0b550706d382ecc6a8a89ff7038db58992fb466572fbb7f7d8431e064a",
+    "swarmwire/client.py": "2d7f7852abe8c8eb04c7a6fb55f7c51ad3093134c97a3e94d4f101b33817b73b",
+    "swarmwire/deadlines.py": "a270b4a8937a15094a0dbc3ed2a9e22b45236e7ad5ef89ab89a66d12c10cd141",
+    "swarmwire/frameworks.py": "26ae1171953924f6deb6301a39adff3038f90b1d2ac8048db294fcb961ef41c9",
+    "swarmwire/mcp_server.py": "6b5997ec4ac2cd1cfe001063ce85ec1af7cb6404b96f8d46b2c948e225484a3c",
+    "swarmwire/runtime.py": "4293e6487d216dfa47755160a41579b1b17d8151f485c8bf1159e408a718b730",
+    "swarmwire/tools.py": "8563c1985d5caba86363d535122c85df301a299bd7d3ce4672e1e8166b270199",
+    "swarmwire/transports.py": "dbc1b172b9a48acd7dda3aeba5d830ad995d332fa60113ff0b458097771c8bca"
+  },
+  "results": [
+    {
+      "mode": "zeromq_ipc",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 259.875,
+      "p95_us": 314.0,
+      "p99_us": 383.416
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1418.709,
+      "p95_us": 2116.459,
+      "p99_us": 3179.666
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 251.541,
+      "p95_us": 296.083,
+      "p99_us": 318.209
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 5694.708,
+      "p95_us": 16997.292,
+      "p99_us": 23244.083
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 0,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.68401,
+      "requests_per_second": 5847.87
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 307.292,
+      "p95_us": 562.125,
+      "p99_us": 8541.167
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 0,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.836174,
+      "requests_per_second": 4783.69
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 289.292,
+      "p95_us": 329.791,
+      "p99_us": 380.333
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1145.958,
+      "p95_us": 1320.167,
+      "p99_us": 1935.834
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 4380.125,
+      "p95_us": 6787.791,
+      "p99_us": 7182.583
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 38.666,
+      "p95_us": 45.75,
+      "p99_us": 63.208
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 0,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.050523,
+      "requests_per_second": 79172.38
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 45.792,
+      "p95_us": 65.667,
+      "p99_us": 89.042
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 562.542,
+      "p95_us": 664.916,
+      "p99_us": 886.625
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 192.5,
+      "p95_us": 290.125,
+      "p99_us": 407.917
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 519.833,
+      "p95_us": 803.458,
+      "p99_us": 1521.708
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 0,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.349961,
+      "requests_per_second": 11429.84
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 113.125,
+      "p95_us": 141.042,
+      "p99_us": 165.25
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 1745.917,
+      "p95_us": 1999.291,
+      "p99_us": 2051.667
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 102.041,
+      "p95_us": 152.583,
+      "p99_us": 306.5
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1305.791,
+      "p95_us": 1610.291,
+      "p99_us": 1672.916
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 219.875,
+      "p95_us": 282.291,
+      "p99_us": 311.041
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 205.916,
+      "p95_us": 289.584,
+      "p99_us": 395.333
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 0,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.593888,
+      "requests_per_second": 6735.27
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 5324.083,
+      "p95_us": 8573.041,
+      "p99_us": 21216.667
+    },
+    {
+      "mode": "nats_core",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 307.291,
+      "p95_us": 371.25,
+      "p99_us": 436.75
+    },
+    {
+      "mode": "nats_core",
+      "trial": 0,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.314053,
+      "requests_per_second": 12736.71
+    },
+    {
+      "mode": "nats_core",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 318.667,
+      "p95_us": 388.25,
+      "p99_us": 516.875
+    },
+    {
+      "mode": "nats_core",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 2580.583,
+      "p95_us": 2999.125,
+      "p99_us": 3117.625
+    },
+    {
+      "mode": "nats_core",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 987.125,
+      "p95_us": 1229.041,
+      "p99_us": 1254.791
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 986.083,
+      "p95_us": 1108.25,
+      "p99_us": 1131.583
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 244.0,
+      "p95_us": 288.291,
+      "p99_us": 410.542
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 0,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.390098,
+      "requests_per_second": 10253.82
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 3127.083,
+      "p95_us": 3852.917,
+      "p99_us": 4012.083
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 251.792,
+      "p95_us": 287.542,
+      "p99_us": 352.375
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 91.708,
+      "p95_us": 151.334,
+      "p99_us": 231.833
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 0,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.143333,
+      "requests_per_second": 27907.1
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 398.75,
+      "p95_us": 440.0,
+      "p99_us": 446.75
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 0,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 1266.542,
+      "p95_us": 1355.75,
+      "p99_us": 1377.458
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 0,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 99.375,
+      "p95_us": 136.041,
+      "p99_us": 207.5
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 0,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 249.334,
+      "p95_us": 943.833,
+      "p99_us": 1780.167
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 0,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 90.625,
+      "p95_us": 140.708,
+      "p99_us": 170.75
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 0,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 164.375,
+      "p95_us": 270.417,
+      "p99_us": 472.0
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 0,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 146.333,
+      "p95_us": 196.209,
+      "p99_us": 237.833
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 0,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 239.0,
+      "p95_us": 279.125,
+      "p99_us": 305.333
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 0,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 83.042,
+      "p95_us": 92.125,
+      "p99_us": 98.416
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 0,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 157.5,
+      "p95_us": 207.417,
+      "p99_us": 272.958
+    },
+    {
+      "mode": "nats_core",
+      "trial": 0,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 311.917,
+      "p95_us": 371.917,
+      "p99_us": 520.417
+    },
+    {
+      "mode": "nats_core",
+      "trial": 0,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 305.959,
+      "p95_us": 366.458,
+      "p99_us": 439.375
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 0,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 139.542,
+      "p95_us": 185.25,
+      "p99_us": 223.208
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 1705.708,
+      "p95_us": 1893.292,
+      "p99_us": 1967.0
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 111.625,
+      "p95_us": 129.5,
+      "p99_us": 150.917
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 100.875,
+      "p95_us": 111.417,
+      "p99_us": 130.084
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 478.875,
+      "p95_us": 491.708,
+      "p99_us": 511.042
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 1,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.299925,
+      "requests_per_second": 13336.66
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 1,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.738113,
+      "requests_per_second": 5419.22
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 237.5,
+      "p95_us": 341.0,
+      "p99_us": 557.041
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 3954.375,
+      "p95_us": 6315.458,
+      "p99_us": 9018.459
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1130.0,
+      "p95_us": 1198.75,
+      "p99_us": 1241.083
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 303.0,
+      "p95_us": 345.792,
+      "p99_us": 418.417
+    },
+    {
+      "mode": "nats_core",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 847.167,
+      "p95_us": 890.625,
+      "p99_us": 918.042
+    },
+    {
+      "mode": "nats_core",
+      "trial": 1,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.309455,
+      "requests_per_second": 12925.96
+    },
+    {
+      "mode": "nats_core",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 316.125,
+      "p95_us": 339.0,
+      "p99_us": 356.292
+    },
+    {
+      "mode": "nats_core",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 2451.917,
+      "p95_us": 2611.958,
+      "p99_us": 2635.958
+    },
+    {
+      "mode": "nats_core",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 308.667,
+      "p95_us": 510.083,
+      "p99_us": 906.75
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 1,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 1.350807,
+      "requests_per_second": 2961.19
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 195.5,
+      "p95_us": 247.875,
+      "p99_us": 288.583
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 5061.0,
+      "p95_us": 5450.25,
+      "p99_us": 5529.875
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1263.625,
+      "p95_us": 1473.208,
+      "p99_us": 1582.833
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 207.292,
+      "p95_us": 279.167,
+      "p99_us": 338.667
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 1,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.656722,
+      "requests_per_second": 6090.85
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 5754.75,
+      "p95_us": 6793.458,
+      "p99_us": 6981.167
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1554.917,
+      "p95_us": 1676.667,
+      "p99_us": 1715.375
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 255.292,
+      "p95_us": 291.375,
+      "p99_us": 307.25
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 259.417,
+      "p95_us": 315.583,
+      "p99_us": 398.791
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 1,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.470809,
+      "requests_per_second": 8496.02
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 3148.667,
+      "p95_us": 3552.625,
+      "p99_us": 5434.708
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 249.791,
+      "p95_us": 499.375,
+      "p99_us": 1249.291
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 942.709,
+      "p95_us": 975.542,
+      "p99_us": 993.625
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 250.125,
+      "p95_us": 335.375,
+      "p99_us": 449.583
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 1,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.134203,
+      "requests_per_second": 29805.67
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 89.125,
+      "p95_us": 102.875,
+      "p99_us": 119.417
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 97.75,
+      "p95_us": 121.041,
+      "p99_us": 171.459
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 398.75,
+      "p95_us": 460.167,
+      "p99_us": 483.542
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 1361.583,
+      "p95_us": 1766.458,
+      "p99_us": 2056.542
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 1,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.051032,
+      "requests_per_second": 78382.0
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 547.959,
+      "p95_us": 630.334,
+      "p99_us": 642.875
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 38.667,
+      "p95_us": 41.791,
+      "p99_us": 56.166
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 1,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 45.625,
+      "p95_us": 51.292,
+      "p99_us": 75.042
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 1,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 188.792,
+      "p95_us": 217.583,
+      "p99_us": 224.5
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 1,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 238.333,
+      "p95_us": 274.5,
+      "p99_us": 301.709
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 1,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 157.208,
+      "p95_us": 198.333,
+      "p99_us": 254.25
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 1,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 163.292,
+      "p95_us": 194.292,
+      "p99_us": 228.542
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 1,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 88.333,
+      "p95_us": 102.417,
+      "p99_us": 125.875
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 1,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 83.667,
+      "p95_us": 94.75,
+      "p99_us": 126.291
+    },
+    {
+      "mode": "nats_core",
+      "trial": 1,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 318.084,
+      "p95_us": 448.958,
+      "p99_us": 560.0
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 1,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 152.583,
+      "p95_us": 198.958,
+      "p99_us": 241.5
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 1,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 243.083,
+      "p95_us": 286.416,
+      "p99_us": 399.416
+    },
+    {
+      "mode": "nats_core",
+      "trial": 1,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 303.167,
+      "p95_us": 327.375,
+      "p99_us": 344.459
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 1,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 144.416,
+      "p95_us": 192.709,
+      "p99_us": 229.709
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 243.125,
+      "p95_us": 285.625,
+      "p99_us": 350.791
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 249.917,
+      "p95_us": 288.75,
+      "p99_us": 323.334
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 2,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.36757,
+      "requests_per_second": 10882.27
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 3080.083,
+      "p95_us": 3144.916,
+      "p99_us": 3177.167
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 967.583,
+      "p95_us": 1056.166,
+      "p99_us": 1232.041
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 2,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.647081,
+      "requests_per_second": 6181.6
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 247.292,
+      "p95_us": 290.75,
+      "p99_us": 317.958
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 5155.583,
+      "p95_us": 5671.792,
+      "p99_us": 5852.25
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1247.333,
+      "p95_us": 1336.417,
+      "p99_us": 1426.708
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 252.5,
+      "p95_us": 297.792,
+      "p99_us": 376.458
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 392.167,
+      "p95_us": 413.209,
+      "p99_us": 437.583
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 1273.75,
+      "p95_us": 1362.958,
+      "p99_us": 1430.25
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 97.959,
+      "p95_us": 109.0,
+      "p99_us": 123.417
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 2,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.138243,
+      "requests_per_second": 28934.51
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 90.292,
+      "p95_us": 99.959,
+      "p99_us": 124.917
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 39.833,
+      "p95_us": 43.917,
+      "p99_us": 59.417
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 191.875,
+      "p95_us": 199.417,
+      "p99_us": 221.709
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 2,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.051005,
+      "requests_per_second": 78423.43
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 556.084,
+      "p95_us": 627.916,
+      "p99_us": 678.916
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 49.292,
+      "p95_us": 1651.875,
+      "p99_us": 6700.292
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 494.875,
+      "p95_us": 545.25,
+      "p99_us": 564.5
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 113.584,
+      "p95_us": 131.709,
+      "p99_us": 163.458
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 101.833,
+      "p95_us": 115.291,
+      "p99_us": 140.167
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 1654.833,
+      "p95_us": 1771.542,
+      "p99_us": 1829.709
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 2,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.300597,
+      "requests_per_second": 13306.87
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 2,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.715058,
+      "requests_per_second": 5593.95
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 303.583,
+      "p95_us": 387.75,
+      "p99_us": 436.625
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1124.083,
+      "p95_us": 1195.042,
+      "p99_us": 1212.5
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 4059.75,
+      "p95_us": 5885.792,
+      "p99_us": 6186.416
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 301.791,
+      "p95_us": 382.625,
+      "p99_us": 593.833
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1336.792,
+      "p95_us": 1809.0,
+      "p99_us": 2009.917
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 2,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.606967,
+      "requests_per_second": 6590.15
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 4944.041,
+      "p95_us": 5765.917,
+      "p99_us": 6426.5
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 203.458,
+      "p95_us": 288.583,
+      "p99_us": 406.834
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 210.167,
+      "p95_us": 284.542,
+      "p99_us": 397.167
+    },
+    {
+      "mode": "nats_core",
+      "trial": 2,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.355417,
+      "requests_per_second": 11254.39
+    },
+    {
+      "mode": "nats_core",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 921.792,
+      "p95_us": 1345.042,
+      "p99_us": 1654.334
+    },
+    {
+      "mode": "nats_core",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 325.25,
+      "p95_us": 457.542,
+      "p99_us": 905.5
+    },
+    {
+      "mode": "nats_core",
+      "trial": 2,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 308.667,
+      "p95_us": 397.5,
+      "p99_us": 535.292
+    },
+    {
+      "mode": "nats_core",
+      "trial": 2,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 2779.209,
+      "p95_us": 3688.417,
+      "p99_us": 4056.167
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 2,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 84.375,
+      "p95_us": 125.167,
+      "p99_us": 206.667
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 2,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 157.125,
+      "p95_us": 236.709,
+      "p99_us": 310.125
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 2,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 141.833,
+      "p95_us": 183.333,
+      "p99_us": 234.167
+    },
+    {
+      "mode": "nats_core",
+      "trial": 2,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 312.458,
+      "p95_us": 406.417,
+      "p99_us": 518.75
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 2,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 147.75,
+      "p95_us": 213.541,
+      "p99_us": 264.791
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 2,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 87.333,
+      "p95_us": 117.041,
+      "p99_us": 154.667
+    },
+    {
+      "mode": "nats_core",
+      "trial": 2,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 307.083,
+      "p95_us": 389.667,
+      "p99_us": 530.917
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 2,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 243.25,
+      "p95_us": 291.75,
+      "p99_us": 446.459
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 2,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 162.667,
+      "p95_us": 218.291,
+      "p99_us": 279.667
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 2,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 248.292,
+      "p95_us": 346.667,
+      "p99_us": 2530.333
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 3,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.173374,
+      "requests_per_second": 23071.5
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 398.167,
+      "p95_us": 481.583,
+      "p99_us": 512.666
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 1406.459,
+      "p95_us": 2156.125,
+      "p99_us": 3091.375
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 99.125,
+      "p95_us": 121.375,
+      "p99_us": 178.5
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 79.875,
+      "p95_us": 186.0,
+      "p99_us": 645.667
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 578.667,
+      "p95_us": 639.167,
+      "p99_us": 743.583
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 44.542,
+      "p95_us": 93.333,
+      "p99_us": 157.958
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 46.833,
+      "p95_us": 90.833,
+      "p99_us": 312.916
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 186.542,
+      "p95_us": 197.959,
+      "p99_us": 215.125
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 3,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.051619,
+      "requests_per_second": 77490.16
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1121.0,
+      "p95_us": 1168.333,
+      "p99_us": 1181.834
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 302.375,
+      "p95_us": 330.209,
+      "p99_us": 355.625
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 3,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.718391,
+      "requests_per_second": 5568.0
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 3767.375,
+      "p95_us": 4191.791,
+      "p99_us": 4286.791
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 288.458,
+      "p95_us": 319.5,
+      "p99_us": 350.833
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 200.584,
+      "p95_us": 273.834,
+      "p99_us": 316.667
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1248.0,
+      "p95_us": 1748.541,
+      "p99_us": 2331.292
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 224.209,
+      "p95_us": 511.292,
+      "p99_us": 868.625
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 6085.708,
+      "p95_us": 11332.167,
+      "p99_us": 12419.292
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 3,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.653919,
+      "requests_per_second": 6116.97
+    },
+    {
+      "mode": "nats_core",
+      "trial": 3,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.299529,
+      "requests_per_second": 13354.29
+    },
+    {
+      "mode": "nats_core",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 859.459,
+      "p95_us": 932.375,
+      "p99_us": 949.75
+    },
+    {
+      "mode": "nats_core",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 2415.041,
+      "p95_us": 2583.083,
+      "p99_us": 2669.834
+    },
+    {
+      "mode": "nats_core",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 301.875,
+      "p95_us": 330.25,
+      "p99_us": 360.708
+    },
+    {
+      "mode": "nats_core",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 312.708,
+      "p95_us": 349.209,
+      "p99_us": 368.75
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 481.125,
+      "p95_us": 505.833,
+      "p99_us": 521.333
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 3,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.309014,
+      "requests_per_second": 12944.38
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 1655.25,
+      "p95_us": 1726.042,
+      "p99_us": 1774.375
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 100.708,
+      "p95_us": 109.083,
+      "p99_us": 114.5
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 113.333,
+      "p95_us": 140.458,
+      "p99_us": 164.125
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 250.208,
+      "p95_us": 275.167,
+      "p99_us": 284.875
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 948.542,
+      "p95_us": 1012.375,
+      "p99_us": 1049.25
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 3069.167,
+      "p95_us": 3220.167,
+      "p99_us": 3303.291
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 244.458,
+      "p95_us": 280.792,
+      "p99_us": 320.0
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 3,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.370469,
+      "requests_per_second": 10797.12
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 5213.875,
+      "p95_us": 5672.167,
+      "p99_us": 5793.584
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 254.208,
+      "p95_us": 301.0,
+      "p99_us": 347.291
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 3,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.623784,
+      "requests_per_second": 6412.47
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 3,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1256.125,
+      "p95_us": 1350.625,
+      "p99_us": 1391.0
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 3,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 242.667,
+      "p95_us": 281.25,
+      "p99_us": 316.417
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 3,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 239.208,
+      "p95_us": 272.084,
+      "p99_us": 291.625
+    },
+    {
+      "mode": "nats_core",
+      "trial": 3,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 298.333,
+      "p95_us": 325.125,
+      "p99_us": 343.25
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 3,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 156.958,
+      "p95_us": 191.833,
+      "p99_us": 207.041
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 3,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 88.083,
+      "p95_us": 98.292,
+      "p99_us": 111.75
+    },
+    {
+      "mode": "nats_core",
+      "trial": 3,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 304.417,
+      "p95_us": 320.666,
+      "p99_us": 336.0
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 3,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 236.625,
+      "p95_us": 267.459,
+      "p99_us": 280.958
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 3,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 84.75,
+      "p95_us": 106.542,
+      "p99_us": 127.625
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 3,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 141.666,
+      "p95_us": 179.625,
+      "p99_us": 243.958
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 3,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 151.833,
+      "p95_us": 176.75,
+      "p99_us": 192.667
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 3,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 140.459,
+      "p95_us": 167.667,
+      "p99_us": 202.166
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 3147.666,
+      "p95_us": 3529.875,
+      "p99_us": 3568.25
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 959.167,
+      "p95_us": 1004.458,
+      "p99_us": 1050.375
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 4,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.370924,
+      "requests_per_second": 10783.88
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 251.0,
+      "p95_us": 280.209,
+      "p99_us": 299.542
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 243.25,
+      "p95_us": 266.125,
+      "p99_us": 281.625
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 301.041,
+      "p95_us": 326.167,
+      "p99_us": 354.541
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 3813.291,
+      "p95_us": 4155.084,
+      "p99_us": 4932.875
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1132.125,
+      "p95_us": 1240.125,
+      "p99_us": 1332.0
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 296.083,
+      "p95_us": 767.084,
+      "p99_us": 1156.917
+    },
+    {
+      "mode": "swarmwire_tcp",
+      "trial": 4,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.986773,
+      "requests_per_second": 4053.62
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 39.25,
+      "p95_us": 41.416,
+      "p99_us": 49.875
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 4,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.052141,
+      "requests_per_second": 76715.55
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 604.25,
+      "p95_us": 662.042,
+      "p99_us": 676.458
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 225.541,
+      "p95_us": 250.875,
+      "p99_us": 256.375
+    },
+    {
+      "mode": "swarmwire_memory",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 48.083,
+      "p95_us": 69.334,
+      "p99_us": 91.417
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 272.542,
+      "p95_us": 332.458,
+      "p99_us": 358.916
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 199.083,
+      "p95_us": 297.958,
+      "p99_us": 346.458
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 4,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.568363,
+      "requests_per_second": 7037.76
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 4658.417,
+      "p95_us": 4852.416,
+      "p99_us": 4900.084
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1180.0,
+      "p95_us": 1426.333,
+      "p99_us": 1470.75
+    },
+    {
+      "mode": "nats_core",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 875.875,
+      "p95_us": 1327.792,
+      "p99_us": 1620.209
+    },
+    {
+      "mode": "nats_core",
+      "trial": 4,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.300853,
+      "requests_per_second": 13295.54
+    },
+    {
+      "mode": "nats_core",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 314.208,
+      "p95_us": 338.125,
+      "p99_us": 360.791
+    },
+    {
+      "mode": "nats_core",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 302.375,
+      "p95_us": 323.333,
+      "p99_us": 344.875
+    },
+    {
+      "mode": "nats_core",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 2413.708,
+      "p95_us": 2550.041,
+      "p99_us": 2656.916
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 242.083,
+      "p95_us": 288.75,
+      "p99_us": 328.292
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 1297.916,
+      "p95_us": 1481.709,
+      "p99_us": 1500.834
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 4,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.616654,
+      "requests_per_second": 6486.62
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 244.75,
+      "p95_us": 284.542,
+      "p99_us": 301.5
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 5179.834,
+      "p95_us": 5544.792,
+      "p99_us": 6053.125
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 1674.375,
+      "p95_us": 1742.125,
+      "p99_us": 1784.75
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 101.25,
+      "p95_us": 111.833,
+      "p99_us": 119.709
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 4,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.299185,
+      "requests_per_second": 13369.68
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 113.958,
+      "p95_us": 160.125,
+      "p99_us": 204.917
+    },
+    {
+      "mode": "swarmwire_unix",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 486.375,
+      "p95_us": 520.333,
+      "p99_us": 546.833
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 4,
+      "workload": "completed_requests",
+      "producers": 32,
+      "verified_requests": 4000,
+      "seconds": 0.134625,
+      "requests_per_second": 29712.24
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 4096,
+      "samples": 500,
+      "p50_us": 97.375,
+      "p95_us": 106.0,
+      "p99_us": 110.25
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 4,
+      "workload": "agent_rtt",
+      "payload_text_bytes": 64,
+      "samples": 500,
+      "p50_us": 88.542,
+      "p95_us": 96.417,
+      "p99_us": 106.959
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 32,
+      "samples": 50,
+      "p50_us": 1250.666,
+      "p95_us": 1289.125,
+      "p99_us": 1407.459
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 4,
+      "workload": "scatter_gather",
+      "workers": 8,
+      "samples": 50,
+      "p50_us": 390.375,
+      "p95_us": 409.291,
+      "p99_us": 411.833
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 4,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 152.584,
+      "p95_us": 186.25,
+      "p99_us": 215.083
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 4,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 87.75,
+      "p95_us": 95.625,
+      "p99_us": 99.625
+    },
+    {
+      "mode": "nats_core",
+      "trial": 4,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 297.917,
+      "p95_us": 322.084,
+      "p99_us": 345.042
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 4,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 137.333,
+      "p95_us": 168.166,
+      "p99_us": 184.833
+    },
+    {
+      "mode": "zeromq_inproc",
+      "trial": 4,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 140.958,
+      "p95_us": 171.583,
+      "p99_us": 198.583
+    },
+    {
+      "mode": "zeromq_ipc",
+      "trial": 4,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 153.167,
+      "p95_us": 182.5,
+      "p99_us": 218.292
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 4,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 241.208,
+      "p95_us": 267.833,
+      "p99_us": 286.917
+    },
+    {
+      "mode": "swarmwire_unix_stream",
+      "trial": 4,
+      "workload": "native_api_rtt",
+      "payload_bytes": 64,
+      "samples": 500,
+      "p50_us": 84.208,
+      "p95_us": 97.334,
+      "p99_us": 127.792
+    },
+    {
+      "mode": "swarmwire_tcp_stream",
+      "trial": 4,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 246.5,
+      "p95_us": 276.5,
+      "p99_us": 287.542
+    },
+    {
+      "mode": "nats_core",
+      "trial": 4,
+      "workload": "native_api_rtt",
+      "payload_bytes": 4096,
+      "samples": 500,
+      "p50_us": 303.458,
+      "p95_us": 335.458,
+      "p99_us": 383.25
+    }
+  ]
+}

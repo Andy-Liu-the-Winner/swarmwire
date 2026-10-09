@@ -1,0 +1,33 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+*.sock
+
+# Local configuration and credentials
+.env
+.env.*
+*.env
+secrets/
+credentials/
+credentials.json
+*.pem
+*.key
+*.p12
+*.pfx
+.aws/
+.codex/
+.agents/
+
+# Generated executables and local files
+bin/
+.DS_Store
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.log
+*.zip
+work/

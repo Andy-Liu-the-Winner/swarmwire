@@ -1,0 +1,72 @@
+{
+  "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+  "python": "3.13.1",
+  "transport": "tcp_loopback",
+  "loop": "_UnixSelectorEventLoop",
+  "notes": [
+    "Native RTT uses two blocking client sockets in one native process and a separate broker process.",
+    "Python RTT uses sender and echo worker in one Python process and a separate broker process.",
+    "Native and Python raw payload sizes match; JSON envelopes add metadata and serialization.",
+    "MCP RTT includes four real SDK tool calls to two separate stdio server processes.",
+    "Fan-in includes Python producers/consumer and verifies every message exactly once.",
+    "No LLM calls. These are transport measurements, not agent completion times."
+  ],
+  "results": [
+    {
+      "mode": "native_raw",
+      "payload_bytes": 64,
+      "samples": 1000,
+      "rtt_us_p50": 190.25,
+      "rtt_us_p95": 204.375,
+      "rtt_us_p99": 217.875
+    },
+    {
+      "mode": "python_raw",
+      "samples": 1000,
+      "payload_bytes": 64,
+      "rtt_us_p50": 279.42,
+      "rtt_us_p95": 323.58,
+      "rtt_us_p99": 347.12
+    },
+    {
+      "mode": "python_json",
+      "samples": 1000,
+      "payload_bytes": 64,
+      "rtt_us_p50": 335.42,
+      "rtt_us_p95": 356.0,
+      "rtt_us_p99": 384.58
+    },
+    {
+      "mode": "native_raw",
+      "payload_bytes": 4096,
+      "samples": 1000,
+      "rtt_us_p50": 161.834,
+      "rtt_us_p95": 319.792,
+      "rtt_us_p99": 3271.54
+    },
+    {
+      "mode": "python_raw",
+      "samples": 1000,
+      "payload_bytes": 4096,
+      "rtt_us_p50": 282.33,
+      "rtt_us_p95": 334.42,
+      "rtt_us_p99": 372.17
+    },
+    {
+      "mode": "python_json",
+      "samples": 1000,
+      "payload_bytes": 4096,
+      "rtt_us_p50": 363.5,
+      "rtt_us_p95": 395.83,
+      "rtt_us_p99": 426.75
+    },
+    {
+      "mode": "python_fan_in",
+      "messages": 10000,
+      "agents": 32,
+      "payload_bytes": 64,
+      "seconds": 0.429,
+      "messages_per_second": 23311
+    }
+  ]
+}

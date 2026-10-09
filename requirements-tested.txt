@@ -1,0 +1,9 @@
+# Direct dependencies used for the recorded comparison and validation.
+# See requirements-lock.txt for the full isolated environment.
+mcp==1.30.0
+orjson==3.13.0
+uvloop==0.23.0; sys_platform != "win32"
+pyzmq==27.2.0
+nats-py==2.16.0
+langgraph==1.2.14
+async-timeout==5.0.1; python_version < "3.11"

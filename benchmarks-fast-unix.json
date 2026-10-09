@@ -1,0 +1,80 @@
+{
+  "platform": "macOS-26.3-arm64-arm-64bit",
+  "python": "3.10.12",
+  "transport": "unix",
+  "loop": "Loop",
+  "notes": [
+    "Native RTT uses two blocking client sockets in one native process and a separate broker process.",
+    "Python RTT uses sender and echo worker in one Python process and a separate broker process.",
+    "Native and Python raw payload sizes match; JSON envelopes add metadata and serialization.",
+    "MCP RTT includes four real SDK tool calls to two separate stdio server processes.",
+    "Fan-in includes Python producers/consumer and verifies every message exactly once.",
+    "No LLM calls. These are transport measurements, not agent completion times."
+  ],
+  "results": [
+    {
+      "mode": "native_raw",
+      "payload_bytes": 64,
+      "samples": 2000,
+      "rtt_us_p50": 23.875,
+      "rtt_us_p95": 156.333,
+      "rtt_us_p99": 588.083
+    },
+    {
+      "mode": "python_raw",
+      "samples": 2000,
+      "payload_bytes": 64,
+      "rtt_us_p50": 120.25,
+      "rtt_us_p95": 370.17,
+      "rtt_us_p99": 986.71
+    },
+    {
+      "mode": "python_json",
+      "samples": 2000,
+      "payload_bytes": 64,
+      "rtt_us_p50": 164.88,
+      "rtt_us_p95": 225.25,
+      "rtt_us_p99": 306.21
+    },
+    {
+      "mode": "native_raw",
+      "payload_bytes": 4096,
+      "samples": 2000,
+      "rtt_us_p50": 16.917,
+      "rtt_us_p95": 21.875,
+      "rtt_us_p99": 39
+    },
+    {
+      "mode": "python_raw",
+      "samples": 2000,
+      "payload_bytes": 4096,
+      "rtt_us_p50": 120.88,
+      "rtt_us_p95": 226.25,
+      "rtt_us_p99": 427.54
+    },
+    {
+      "mode": "python_json",
+      "samples": 2000,
+      "payload_bytes": 4096,
+      "rtt_us_p50": 176.42,
+      "rtt_us_p95": 232.33,
+      "rtt_us_p99": 388.21
+    },
+    {
+      "mode": "python_fan_in",
+      "messages": 20000,
+      "agents": 64,
+      "payload_bytes": 64,
+      "seconds": 0.4723,
+      "messages_per_second": 42347
+    },
+    {
+      "mode": "mcp_four_tool_roundtrip",
+      "samples": 100,
+      "payload_bytes": 64,
+      "rtt_us_p50": 7691.83,
+      "rtt_us_p95": 10666.67,
+      "rtt_us_p99": 14236.04
+    }
+  ]
+}
