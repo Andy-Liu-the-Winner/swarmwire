@@ -44,7 +44,7 @@ jobs:
           python -m swarmwire build
           python -m unittest discover -s tests -v
       - name: Build wheel from source distribution
-        run: python -m build --no-isolation
+        run: python -m build
       - name: Verify clean wheel install without compiler access
         shell: bash
         run: |
