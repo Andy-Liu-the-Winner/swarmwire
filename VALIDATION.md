@@ -1,4 +1,31 @@
-# Validation: SwarmWire 0.3
+# Validation: SwarmWire 0.4
+
+0.4 managed-lifecycle validation on October 11, 2026:
+
+- 56 tests passed with the Python 3.10 dependency environment, including actual
+  ZeroMQ, NATS, and compiled checkpointed LangGraph. Standard-library Python 3.13
+  also passed, with three optional-dependency cases skipped.
+- Managed startup verified native readiness, concurrent endpoint registration,
+  session isolation, one-time cached builds, invalid compiler/cache errors,
+  environment rollback, and startup-only fallback with no request replay.
+- Application exceptions, cancellation during startup, malformed/late readiness,
+  broker death, and abrupt parent exit all exercised process/connection cleanup.
+- The one-command launcher connected an actual worker in a separate process and
+  preserved nonzero application exit codes.
+- A platform wheel was built from its source distribution, installed into a clean
+  environment, and run outside the checkout with CXX pointing to a missing compiler.
+  Python 3.10 and 3.13 native self-checks and the application launcher completed
+  successfully. The bundled binary is executable by non-owner deployment users.
+- All 56 tests also passed with AddressSanitizer and UndefinedBehaviorSanitizer
+  on the native broker. The real LangGraph example completed using managed startup.
+- Official MCP SDK initialization, discovery of six tools, and artifact store/load
+  passed through the updated CLI on a managed native broker.
+
+These checks use CPU/local sockets. They allocate no GPUs and call no model API.
+The 0.3 speed/cost discussion remains a historical benchmark/model, not a measured
+0.4 GPU saving. Cross-machine fleet scheduling and 100,000 agents are not validated.
+
+## Recorded 0.3 validation
 
 Validated on macOS 26.3 arm64, Apple Clang 17, and Python 3.10.12 with the
 isolated dependencies in `requirements-lock.txt`. Standard-library Python 3.13.1

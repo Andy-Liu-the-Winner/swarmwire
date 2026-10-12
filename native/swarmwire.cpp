@@ -109,7 +109,7 @@ struct Peer {
 struct Blob { Body data; std::list<std::string>::iterator lru; };
 struct Ticket { int source, destination; std::chrono::steady_clock::time_point issued; };
 class Broker {
-    Reactor reactor; int listener=-1; std::string path, token;
+    Reactor reactor; int listener=-1, lifetime=-1; std::string path, token;
     std::unordered_map<int,std::unique_ptr<Peer>> peers;
     std::unordered_map<std::string,int> names;
     std::unordered_set<int> dirty;
@@ -279,7 +279,7 @@ class Broker {
         return true;
     }
 public:
-    Broker(int port, const std::string& unix_path):path(unix_path) {
+    Broker(int port, const std::string& unix_path, int lifetime_fd=-1):lifetime(lifetime_fd),path(unix_path) {
         const char* t=std::getenv("SWARMWIRE_TOKEN"); if(t) token=t;
         listener=socket(path.empty()?AF_INET:AF_UNIX,SOCK_STREAM,0);
         if(listener<0) throw std::runtime_error("socket failed");
@@ -295,14 +295,16 @@ public:
         }
         if(listen(listener,512)<0) throw std::runtime_error("listen failed");
         fcntl(listener,F_SETFL,O_NONBLOCK); reactor.add(listener);
+        if(lifetime>=0) { fcntl(lifetime,F_SETFL,O_NONBLOCK); reactor.add(lifetime); }
         if(path.empty()) { sockaddr_in a{}; socklen_t n=sizeof(a); getsockname(listener,reinterpret_cast<sockaddr*>(&a),&n); std::cout<<"{\"port\":"<<ntohs(a.sin_port)<<"}"<<std::endl; }
         else std::cout<<"{\"ready\":true}"<<std::endl;
     }
-    ~Broker() { for(auto& entry:peers) ::close(entry.first); if(listener>=0) ::close(listener); if(!path.empty()) ::unlink(path.c_str()); }
+    ~Broker() { for(auto& entry:peers) ::close(entry.first); if(listener>=0) ::close(listener); if(lifetime>=0) ::close(lifetime); if(!path.empty()) ::unlink(path.c_str()); }
     void run() {
         while(running) {
             auto events=reactor.wait();
             for(auto e:events) {
+                if(e.fd==lifetime) { char data; if(::read(lifetime,&data,1)==0) running=0; continue; }
                 if(e.fd==listener) {
                     for(int i=0;i<64;++i) {
                         int s=accept(listener,nullptr,nullptr); if(s<0) break;
@@ -355,10 +357,10 @@ static void benchmark(int port,const std::string& path,int samples,int payload) 
 }
 int main(int argc,char** argv) {
     std::signal(SIGPIPE,SIG_IGN); std::signal(SIGTERM,stop); std::signal(SIGINT,stop);
-    int port=8765,samples=2000,payload=64; std::string path; bool bench=false;
+    int port=8765,samples=2000,payload=64,lifetime=-1; std::string path; bool bench=false;
     try {
-        for(int i=1;i<argc;++i) { std::string arg=argv[i]; if(arg=="bench") bench=true; else if(arg=="--port"&&i+1<argc) port=std::stoi(argv[++i]); else if(arg=="--unix"&&i+1<argc) path=argv[++i]; else if(arg=="--samples"&&i+1<argc) samples=std::stoi(argv[++i]); else if(arg=="--payload"&&i+1<argc) payload=std::stoi(argv[++i]); else throw std::runtime_error("usage: swarmwired [bench] [--port N | --unix PATH] [--samples N] [--payload N]"); }
+        for(int i=1;i<argc;++i) { std::string arg=argv[i]; if(arg=="bench") bench=true; else if(arg=="--port"&&i+1<argc) port=std::stoi(argv[++i]); else if(arg=="--unix"&&i+1<argc) path=argv[++i]; else if(arg=="--lifetime-fd"&&i+1<argc) { lifetime=std::stoi(argv[++i]); if(lifetime<0||fcntl(lifetime,F_GETFD)<0) throw std::runtime_error("invalid lifetime fd"); } else if(arg=="--samples"&&i+1<argc) samples=std::stoi(argv[++i]); else if(arg=="--payload"&&i+1<argc) payload=std::stoi(argv[++i]); else throw std::runtime_error("usage: swarmwired [bench] [--port N | --unix PATH] [--lifetime-fd N] [--samples N] [--payload N]"); }
         if(port<0||port>65535) throw std::runtime_error("invalid port");
-        if(bench) benchmark(port,path,samples,payload); else { Broker broker(port,path); broker.run(); }
+        if(bench) benchmark(port,path,samples,payload); else { Broker broker(port,path,lifetime); broker.run(); }
     } catch(const std::exception& e) { std::cerr<<e.what()<<std::endl; return 1; }
 }

@@ -1,0 +1,5 @@
+include native/swarmwire.cpp
+include LICENSE README.md INTEGRATION.md
+recursive-include examples *.py
+recursive-include tests *.py
+global-exclude *.pyc .env .env.* *.pem *.key

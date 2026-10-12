@@ -491,6 +491,11 @@ class PeerEndpoint(BufferedEndpoint):
         return {**await self.control.stats(), 'backend': 'peer', 'route_policy': self.route_policy, 'peer_links': len(self._links), 'reserved_slots': self._reserved, 'receive_bytes': self._bytes, 'local_sends': self._sent}
 
     async def close(self):
+        if not hasattr(self, '_cleanup_task'):
+            self._cleanup_task = asyncio.create_task(self._close_resources())
+        await asyncio.shield(self._cleanup_task)
+
+    async def _close_resources(self):
         self._fail()
         if self._self_slot:
             self._self_slot.release()

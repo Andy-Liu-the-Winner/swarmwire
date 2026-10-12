@@ -4,7 +4,6 @@ import uuid
 from .client import Agent, RelayError
 from .fast_client import FastClient as Client
 from .frameworks import result_dict
-from .transports import MemoryBus
 
 
 class NativeTransport:
@@ -36,8 +35,14 @@ class Swarm:
     All participants must share the transport's event loop or deployment scope.
     Cancellation stops the caller's wait; it does not terminate remote model work.
     """
-    def __init__(self, transport=None):
-        self.transport = transport or MemoryBus()
+    def __init__(self, transport=None, *, backend=None):
+        if transport is not None and backend is not None:
+            raise ValueError('pass a transport or a backend, not both')
+        if transport is None:
+            from .managed import configured_transport
+            self.transport, self.backend = configured_transport(backend)
+        else:
+            self.transport, self.backend = transport, type(transport).__name__
         self._owns_transport = transport is None
         self._endpoints = []
         self._workers = {}
@@ -47,7 +52,12 @@ class Swarm:
     async def __aenter__(self):
         if self._closed or self.caller is not None:
             raise RelayError("a Swarm context can only be entered once")
-        endpoint = await self.transport.connect("caller-" + uuid.uuid4().hex[:16])
+        try:
+            endpoint = await self.transport.connect("caller-" + uuid.uuid4().hex[:16])
+        except BaseException:
+            if self._owns_transport:
+                await self.close()
+            raise
         self._endpoints.append(endpoint)
         self.caller = Agent(endpoint)
         return self
@@ -64,11 +74,28 @@ class Swarm:
         agent = Agent(endpoint)
         async def normalized(payload, message):
             return result_dict(await handler(payload, message))
-        self._workers[name] = asyncio.create_task(agent.serve(normalized, concurrency=concurrency), name="worker:" + name)
         prepare = getattr(self.caller.client, 'preconnect', None)
-        if prepare:
-            await prepare(name)
+        try:
+            if prepare:
+                await prepare(name)
+        except BaseException:
+            self._endpoints.remove(endpoint)
+            await endpoint.close()
+            raise
+        self._workers[name] = asyncio.create_task(agent.serve(normalized, concurrency=concurrency), name="worker:" + name)
         return agent
+
+    def status(self):
+        """Cheap diagnostics for existing logs/health endpoints; no background polling."""
+        status = getattr(self.transport, 'status', lambda: {'backend': self.backend})()
+        return {**status, 'configured_backend': self.backend, 'workers': len(self._workers),
+                'pending_requests': len(self.caller._requests) if self.caller else 0,
+                'closed': self._closed}
+
+    async def stats(self):
+        if self._closed or self.caller is None:
+            raise RelayError('Swarm is not open')
+        return {**await self.caller.client.stats(), **self.status()}
 
     async def request(self, to, payload, *, timeout=30.0):
         if self._closed or self.caller is None:
@@ -101,9 +128,12 @@ class Swarm:
         for task in self._workers.values():
             task.cancel()
         await asyncio.gather(*self._workers.values(), return_exceptions=True)
-        await asyncio.gather(*(endpoint.close() for endpoint in self._endpoints))
-        if self._owns_transport:
-            await self.transport.close()
+        try:
+            await asyncio.gather(*(endpoint.close() for endpoint in self._endpoints), return_exceptions=True)
+        finally:
+            close = getattr(self.transport, 'close', None)
+            if self._owns_transport and close:
+                await close()
 
     async def __aexit__(self, *_):
         await self.close()

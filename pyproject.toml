@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=61", "wheel>=0.43"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "swarmwire"
-version = "0.3.0"
+version = "0.4.0"
 description = "C++ local message router with Python, OpenAI, Anthropic and MCP adapters"
 authors = [{name = "Andy Liu"}]
 requires-python = ">=3.10"

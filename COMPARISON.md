@@ -1,5 +1,9 @@
 # Measured comparison: SwarmWire 0.3
 
+This report is the recorded 0.3 baseline. To reproduce its source hashes, use
+Git commit `4ee1942` (the initial public commit). Current 0.4 adds managed startup
+and installable native wheels; its competitive performance was not remeasured here.
+
 **The adaptive layer won all 45 matched median comparisons in this run.**
 That means Unix against ZeroMQ IPC, and loopback TCP against ZeroMQ TCP and NATS
 Core, across 15 workloads per pairing. The comparison covers both the same

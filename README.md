@@ -1,4 +1,4 @@
-# SwarmWire 0.3
+# SwarmWire 0.4
 
 A working communication layer for agent swarms: a **C++17 router**, a small Python
 runtime, interchangeable transports, and adapters for existing agents. It moves
@@ -17,6 +17,62 @@ Agent RTT was 28.21 µs; binary RPC was 25.83 µs. First-exchange exceptions and
 all competing configurations are retained in the report. This is a measured
 local result, not an unqualified worldwide fastest claim.
 
+## Use without managing infrastructure
+
+0.4 adds managed local startup. The default still uses in-process memory, which
+needs no broker or compiler. Change configuration when you need local sockets:
+
+```python
+from swarmwire import Swarm, CallableAdapter
+
+async with Swarm(backend='local') as swarm:
+    await swarm.register('researcher', CallableAdapter(existing_agent.ainvoke))
+    result = await swarm.request('researcher', {'question': 'explore'})
+```
+
+SwarmWire prepares the broker, starts a private Unix socket, checks readiness,
+and cleans up the process/connections when the context closes. A parent-lifetime
+pipe also stops the broker if its application crashes. There is no cloud account,
+GPU allocation, global daemon, database, container service, or telemetry service.
+Native binaries are included in platform wheels. An editable/source checkout
+builds once with your existing C++17 compiler and caches the result privately.
+No executables are downloaded at runtime.
+
+Keep `Swarm()` in application code and choose with deployment configuration:
+
+```sh
+SWARMWIRE_BACKEND=local python app.py
+SWARMWIRE_BACKEND=memory python app.py
+SWARMWIRE_BACKEND=nats SWARMWIRE_NATS_URL=nats://server:4222 python app.py
+```
+
+For an application that starts multiple local worker processes, use one command:
+
+```sh
+python -m swarmwire run -- python app.py
+```
+
+The launcher shares a private broker's connection settings through the child's
+environment. Descendant workers using `Swarm()` inherit them automatically. Your
+application still owns worker scheduling; every process retains its existing agent
+logic. Existing framework-internal handoffs are not intercepted automatically.
+
+`backend='auto'` may select memory if local startup fails, before any workers run.
+Use this only for workers in one process. Runtime failures fail pending requests;
+there is no transparent replay of model calls or backend switch during a task.
+The multi-process launcher requires native startup and never silently selects memory.
+
+Check an installation without model calls: `python -m swarmwire check`.
+Use `swarm.status()` or `await swarm.stats()` in your existing health endpoint.
+Lifecycle events use Python's `swarmwire` logger; no background polling or
+per-message logging is added, and connection tokens are omitted from status/logs.
+See [deployment and rollback](INTEGRATION.md#managed-local-deployment).
+
+The measured speed comparisons below are the recorded **0.3** baseline. Managed
+startup adds startup work; 0.4 does not claim a new competitive benchmark win.
+Ten thousand or one hundred thousand cross-machine agents remain outside this
+local release's supported/validated deployment scope.
+
 ## Start an exploration
 
 Python 3.10+. Install from this source directory:
@@ -25,6 +81,13 @@ Python 3.10+. Install from this source directory:
 python3 -m venv .venv
 .venv/bin/python -m pip install -e '.[fast]'
 ```
+
+For a compiler-free macOS arm64 or Ubuntu 22.04+ x86-64 install, use the wheel on the
+[0.4 release page](https://github.com/Andy-Liu-the-Winner/swarmwire/releases/tag/v0.4.0).
+The Linux wheel is built for Ubuntu's glibc/libstdc++ environment; it is not a
+universal Linux/musl wheel. Source installations on other macOS/Linux systems
+need a C++17 compiler. SwarmWire is not yet
+published to PyPI; use this checkout or an explicit release file.
 
 ```python
 import asyncio

@@ -6,5 +6,6 @@ from .frameworks import CallableAdapter, LangGraphAdapter, CrewAIAdapter, OpenAI
 from .runtime import NativeTransport, NatsTransport, Swarm
 from .peer import PeerEndpoint, PeerTransport, AdaptiveTransport
 from .raw_rpc import RawRPC
+from .managed import ManagedLocalTransport
 
-__all__ = ["Agent", "Backpressure", "Client", "FastClient", "StreamClient", "Message", "RelayError", "RemoteError", "Tools", "Endpoint", "MemoryBus", "MemoryArtifacts", "CallableAdapter", "LangGraphAdapter", "CrewAIAdapter", "OpenAIAgentsAdapter", "NativeTransport", "NatsTransport", "Swarm", "PeerEndpoint", "PeerTransport", "AdaptiveTransport", "RawRPC"]
+__all__ = ["Agent", "Backpressure", "Client", "FastClient", "StreamClient", "Message", "RelayError", "RemoteError", "Tools", "Endpoint", "MemoryBus", "MemoryArtifacts", "CallableAdapter", "LangGraphAdapter", "CrewAIAdapter", "OpenAIAgentsAdapter", "NativeTransport", "NatsTransport", "Swarm", "PeerEndpoint", "PeerTransport", "AdaptiveTransport", "RawRPC", "ManagedLocalTransport"]

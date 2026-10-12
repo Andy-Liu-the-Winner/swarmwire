@@ -1,5 +1,62 @@
 # Integrating existing agents
 
+## Managed local deployment
+
+Use `Swarm(backend='local')` to own one native broker and adaptive transport for
+the context. There is no manual port, socket, token, or executable setup. Prefer
+`Swarm()`/memory for agents already running in one process. Opting into local
+sockets does not automatically move those agents into separate processes.
+
+With `Swarm()` the optional `SWARMWIRE_BACKEND` selects a backend before startup:
+
+| Value | Behavior |
+|---|---|
+| `memory` (default) | Same-process workers, no extra process |
+| `local` | Auto-build/start a private local broker, adaptive data sockets |
+| `auto` | Try local; on startup failure use same-process memory |
+| `external` | Attach to `SWARMWIRE_SOCKET` or loopback `SWARMWIRE_PORT` |
+| `nats` | Attach to an existing `SWARMWIRE_NATS_URL` deployment |
+
+An explicit `backend=` overrides the environment. An explicit transport object
+retains its original ownership rules and ignores backend environment selection.
+For NATS authentication/TLS settings, continue passing your existing configured
+`NatsTransport`; the environment shortcut only selects a server URL.
+
+Wrap an application that starts local worker processes:
+
+```sh
+python -m swarmwire run -- python app.py
+```
+
+The launcher supplies `SWARMWIRE_BACKEND=external`, a private socket and a generated
+connection token to its child. Descendant workers inherit this environment. They
+can keep `Swarm()` and send to names registered by another process. The launcher
+returns the application's exit code and shuts down its broker on completion.
+It does not provision machines or schedule worker processes for you.
+
+To roll back, change deployment configuration before restarting the application:
+use `memory` for same-process workers, `nats` for existing distributed workers,
+or `external` for an existing local broker. In-flight work is not migrated.
+`auto` fallback happens only before the first endpoint is registered and is unsafe
+as a substitution for separate-process workers; the launcher never uses it.
+
+Platform wheels contain the executable. Source/editable installs use a local
+C++17 compiler and a content-addressed, process-locked build cache. Override the
+private cache location with `SWARMWIRE_CACHE_DIR` (directory mode 0700) or use an
+explicit `SWARMWIRE_BINARY`. Builds use no network. Unsupported platforms can use
+memory/NATS; auto mode can fall back during startup.
+
+Local broker shutdown is tied to context exit, application exceptions, and parent
+process death through an inherited pipe. Abrupt parent death can leave an empty
+temporary directory, but the broker exits and unlinks its socket. Connections
+are not transparently reopened after broker failure, and requests are not replayed.
+Remote cancellations still do not terminate already-started model execution.
+
+`swarm.status()` is synchronous and returns only non-secret lifecycle information.
+`await swarm.stats()` adds on-demand native/endpoint counters. Lifecycle log records
+use the standard `swarmwire` logger with `swarmwire_event` fields. No monitoring
+server, new telemetry SDK, background polling, or per-message timers are installed.
+
 Framework execution and message delivery are independent. You can change either
 without rewriting the other. This version provides a Python integration API and
 an open binary native protocol; other language SDKs have not been implemented.

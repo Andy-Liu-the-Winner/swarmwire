@@ -1,0 +1,54 @@
+name: Package and lifecycle checks
+on:
+  push:
+    paths:
+      - 'swarmwire/**'
+      - 'native/**'
+      - 'tests/**'
+      - 'setup.py'
+      - 'pyproject.toml'
+      - 'MANIFEST.in'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - 'swarmwire/**'
+      - 'native/**'
+      - 'tests/**'
+      - 'setup.py'
+      - 'pyproject.toml'
+      - 'MANIFEST.in'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, macos-14]
+        python: ['3.10', '3.13']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install local test dependencies
+        run: python -m pip install -e '.[fast,zeromq,langgraph]' build wheel
+      - name: Build broker and run regression tests
+        run: |
+          python -m swarmwire build
+          python -m unittest discover -s tests -v
+      - name: Build wheel from source distribution
+        run: python -m build --no-isolation
+      - name: Verify clean wheel install without compiler access
+        shell: bash
+        run: |
+          python -m venv /tmp/swarmwire-install
+          /tmp/swarmwire-install/bin/python -m pip install dist/*.whl
+          cd /tmp
+          CXX=/missing-compiler /tmp/swarmwire-install/bin/python -m swarmwire check --backend local
