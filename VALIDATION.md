@@ -20,6 +20,11 @@
   on the native broker. The real LangGraph example completed using managed startup.
 - Official MCP SDK initialization, discovery of six tools, and artifact store/load
   passed through the updated CLI on a managed native broker.
+- Public CPU-only CI passed all four Ubuntu 22.04/macOS 14 and Python 3.10/3.13
+  combinations, including regression tests, source-distribution builds, and clean
+  compiler-disabled native wheel checks. The external NATS test requires a server
+  binary and is skipped in CI; it passed in the full local environment.
+  [CI results](https://github.com/Andy-Liu-the-Winner/swarmwire/actions/runs/38199937602).
 
 These checks use CPU/local sockets. They allocate no GPUs and call no model API.
 The 0.3 speed/cost discussion remains a historical benchmark/model, not a measured

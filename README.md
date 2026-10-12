@@ -139,8 +139,8 @@ async with await PeerEndpoint.connect('remote-worker',
 ```
 
 Build on macOS/Linux with an existing C++17 compiler. The source implements
-kqueue and epoll; Linux execution
-has not been validated here. Existing Unix socket paths are never overwritten.
+kqueue and epoll; 0.4 lifecycle/package tests passed on Ubuntu 22.04 and macOS
+with Python 3.10/3.13. Existing Unix socket paths are never overwritten.
 The broker also supports `--port 8765`, bound only to loopback.
 
 ## Integrate a framework

@@ -6,6 +6,8 @@ Use `Swarm(backend='local')` to own one native broker and adaptive transport for
 the context. There is no manual port, socket, token, or executable setup. Prefer
 `Swarm()`/memory for agents already running in one process. Opting into local
 sockets does not automatically move those agents into separate processes.
+Reuse one Swarm context for many requests so broker startup and route preparation
+are amortized over the application's lifetime.
 
 With `Swarm()` the optional `SWARMWIRE_BACKEND` selects a backend before startup:
 
