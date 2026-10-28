@@ -1,5 +1,11 @@
 # SwarmWire 0.4
 
+Research workflow, deep exploration, autoresearch with agents typically requires tens of thousands of agents. 
+I expect that there would be swarms of agent running in the near future on a daily basis. 
+To address this, this repo is a low level communication layer (plugin styled) to save latency and 
+save time. Small save would propagate to big win.
+
+
 A working communication layer for agent swarms: a **C++17 router**, a small Python
 runtime, interchangeable transports, and adapters for existing agents. It moves
 compact tasks and findings between workers without invoking a model to route them.
